@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Response, Request, Form
+from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 import json
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -11,7 +11,7 @@ ROOMS_JSON = 'rooms.json'
 sl = {}
 
 
-@app.get("/login", response_class=HTMLResponse)
+@app.get("/login")
 async def get_login_page(request: Request):
     return templates.TemplateResponse(
         request,
@@ -59,7 +59,7 @@ async def show_root2(request: Request):
 
 
 @app.post('/register', response_class=HTMLResponse)
-async def register(request: Request, name: str = Form(...),
+async def register(name: str = Form(...),
                    email: str = Form(...),
                    password: str = Form(...),
                    organization: str = Form(...)):
@@ -76,4 +76,3 @@ async def startup():
             sl = json.loads(users.read())
     else:
         sl = {}
-

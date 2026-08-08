@@ -365,235 +365,235 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Con<span>fero</span></div>
-            <div class="header-actions">
-                <!-- Кнопка выхода теперь ведёт на login.html (или login) -->
-                <a href="login" class="btn btn-outline" id="logoutBtn">Выйти</a>
-            </div>
-        </header>
-
-        <div class="add-wrap">
-            <button class="btn" id="addRoomBtn">➕ Добавить комнату</button>
+<div class="container">
+    <header>
+        <div class="logo">Con<span>fero</span></div>
+        <div class="header-actions">
+            <!-- Кнопка выхода теперь ведёт на login.html (или login) -->
+            <a href="login" class="btn btn-outline" id="logoutBtn">Выйти</a>
         </div>
+    </header>
 
-        <div class="room-grid" id="roomGrid"></div>
+    <div class="add-wrap">
+        <button class="btn" id="addRoomBtn">➕ Добавить комнату</button>
     </div>
 
-    <!-- Модалка добавления комнаты -->
-    <div class="modal-overlay" id="addRoomModal">
-        <div class="modal">
-            <h2>Новая комната</h2>
-            <label>название</label>
-            <input
+    <div class="room-grid" id="roomGrid"></div>
+</div>
+
+<!-- Модалка добавления комнаты -->
+<div class="modal-overlay" id="addRoomModal">
+    <div class="modal">
+        <h2>Новая комната</h2>
+        <label>название</label>
+        <input
                 type="text"
                 id="newRoomName"
                 placeholder="Переговорная А"
-            >
-            <label>вместимость (чел.)</label>
-            <input
+        >
+        <label>вместимость (чел.)</label>
+        <input
                 type="number"
                 id="newRoomCapacity"
                 placeholder="10"
                 min="1"
-            >
-            <label>оснащение</label>
-            <input
+        >
+        <label>оснащение</label>
+        <input
                 type="text"
                 id="newRoomEquip"
                 placeholder="Проектор, доска"
-            >
-            <div class="actions">
-                <button class="btn btn-secondary" id="cancelAddRoom">Отмена</button>
-                <button class="btn" id="saveAddRoom">Сохранить</button>
-            </div>
+        >
+        <div class="actions">
+            <button class="btn btn-secondary" id="cancelAddRoom">Отмена</button>
+            <button class="btn" id="saveAddRoom">Сохранить</button>
         </div>
     </div>
+</div>
 
-    <!-- Модалка бронирования -->
-    <div class="modal-overlay" id="bookModal">
-        <div class="modal">
-            <h2>Бронирование</h2>
-            <p id="bookRoomName" style="font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:12px;"></p>
-            <label>дата</label>
-            <input
+<!-- Модалка бронирования -->
+<div class="modal-overlay" id="bookModal">
+    <div class="modal">
+        <h2>Бронирование</h2>
+        <p id="bookRoomName" style="font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:12px;"></p>
+        <label>дата</label>
+        <input
                 type="date"
                 id="bookDate"
-            >
-            <label>начало</label>
-            <input
+        >
+        <label>начало</label>
+        <input
                 type="time"
                 id="bookStart"
-            >
-            <label>конец</label>
-            <input
+        >
+        <label>конец</label>
+        <input
                 type="time"
                 id="bookEnd"
-            >
-            <div class="actions">
-                <button class="btn btn-secondary" id="cancelBook">Отмена</button>
-                <button class="btn" id="saveBook">Забронировать</button>
-            </div>
+        >
+        <div class="actions">
+            <button class="btn btn-secondary" id="cancelBook">Отмена</button>
+            <button class="btn" id="saveBook">Забронировать</button>
         </div>
     </div>
+</div>
 
-    <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-    <script>
-        let rooms = [
-            { id: 1, name: 'Переговорная А', capacity: 10, equipment: 'Проектор, доска', bookings: [] },
-            { id: 2, name: 'Конференц-зал', capacity: 25, equipment: 'Видеоконференция', bookings: [] },
-            { id: 3, name: 'Комната для мозгового штурма', capacity: 6, equipment: 'Флипчарт', bookings: [] },
-            { id: 4, name: 'Переговорная Б', capacity: 8, equipment: 'Телевизор', bookings: [] }
-        ];
-        let nextRoomId = 5;
-        let nextBookingId = 1;
+<script>
+    let rooms = [
+        { id: 1, name: 'Переговорная А', capacity: 10, equipment: 'Проектор, доска', bookings: [] },
+        { id: 2, name: 'Конференц-зал', capacity: 25, equipment: 'Видеоконференция', bookings: [] },
+        { id: 3, name: 'Комната для мозгового штурма', capacity: 6, equipment: 'Флипчарт', bookings: [] },
+        { id: 4, name: 'Переговорная Б', capacity: 8, equipment: 'Телевизор', bookings: [] }
+    ];
+    let nextRoomId = 5;
+    let nextBookingId = 1;
 
-        function getToday() {
-            return new Date().toISOString().split('T')[0];
-        }
+    function getToday() {
+        return new Date().toISOString().split('T')[0];
+    }
 
-        function isRoomBusy(room) {
-            const now = new Date();
-            const today = getToday();
-            return room.bookings.some(b => {
-                if (b.date !== today) return false;
-                const start = new Date(today + 'T' + b.start);
-                const end = new Date(today + 'T' + b.end);
-                return now >= start && now <= end;
+    function isRoomBusy(room) {
+        const now = new Date();
+        const today = getToday();
+        return room.bookings.some(b => {
+            if (b.date !== today) return false;
+            const start = new Date(today + 'T' + b.start);
+            const end = new Date(today + 'T' + b.end);
+            return now >= start && now <= end;
+        });
+    }
+
+    function renderRooms() {
+        const grid = document.getElementById('roomGrid');
+        grid.innerHTML = '';
+        rooms.forEach(room => {
+            const busy = isRoomBusy(room);
+            const card = document.createElement('div');
+            card.className = 'room-card' + (busy ? ' busy' : '');
+            const bookedNow = room.bookings.find(b => b.date === getToday() &&
+                new Date(getToday()+'T'+b.start) <= new Date() && new Date() <= new Date(getToday()+'T'+b.end));
+            const fillPercent = room.capacity > 0 ? Math.min(100, (bookedNow ? (bookedNow.participants ? bookedNow.participants.length : 0) : 0) / room.capacity * 100) : 0;
+
+            let statusText = busy ? '🔴 занята' : '🟢 свободна';
+            let statusClass = busy ? 'busy' : 'free';
+
+            card.innerHTML = `
+                <div class="top">
+                    <span class="name">${room.name}</span>
+                    <span class="capacity">${room.capacity}</span>
+                </div>
+                <div class="status ${statusClass}">${statusText}</div>
+                <div class="footer">
+                    <div class="fill-bar"><div class="fill" style="width:${fillPercent}%;"></div></div>
+                    <button class="btn-book" ${busy ? 'disabled' : ''} data-room-id="${room.id}">
+                        ${busy ? 'Занято' : 'Забронировать'}
+                    </button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        document.querySelectorAll('.btn-book:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const roomId = parseInt(this.dataset.roomId);
+                openBookModal(roomId);
             });
+        });
+    }
+
+    function openBookModal(roomId) {
+        const room = rooms.find(r => r.id === roomId);
+        if (!room) return;
+        document.getElementById('bookRoomName').textContent = room.name;
+        document.getElementById('bookDate').value = getToday();
+        document.getElementById('bookStart').value = '10:00';
+        document.getElementById('bookEnd').value = '11:00';
+
+        const modal = document.getElementById('bookModal');
+        modal.dataset.roomId = roomId;
+        modal.classList.add('active');
+    }
+
+    document.getElementById('cancelBook').addEventListener('click', function() {
+        document.getElementById('bookModal').classList.remove('active');
+    });
+
+    document.getElementById('saveBook').addEventListener('click', function() {
+        const modal = document.getElementById('bookModal');
+        const roomId = parseInt(modal.dataset.roomId);
+        const room = rooms.find(r => r.id === roomId);
+        if (!room) return;
+
+        const date = document.getElementById('bookDate').value;
+        const start = document.getElementById('bookStart').value;
+        const end = document.getElementById('bookEnd').value;
+
+        if (!date || !start || !end) {
+            showToast('Заполните дату и время');
+            return;
+        }
+        if (start >= end) {
+            showToast('Время начала должно быть раньше окончания');
+            return;
         }
 
-        function renderRooms() {
-            const grid = document.getElementById('roomGrid');
-            grid.innerHTML = '';
-            rooms.forEach(room => {
-                const busy = isRoomBusy(room);
-                const card = document.createElement('div');
-                card.className = 'room-card' + (busy ? ' busy' : '');
-                const bookedNow = room.bookings.find(b => b.date === getToday() &&
-                    new Date(getToday()+'T'+b.start) <= new Date() && new Date() <= new Date(getToday()+'T'+b.end));
-                const fillPercent = room.capacity > 0 ? Math.min(100, (bookedNow ? (bookedNow.participants ? bookedNow.participants.length : 0) : 0) / room.capacity * 100) : 0;
-
-                let statusText = busy ? '🔴 занята' : '🟢 свободна';
-                let statusClass = busy ? 'busy' : 'free';
-
-                card.innerHTML = `
-                    <div class="top">
-                        <span class="name">${room.name}</span>
-                        <span class="capacity">${room.capacity}</span>
-                    </div>
-                    <div class="status ${statusClass}">${statusText}</div>
-                    <div class="footer">
-                        <div class="fill-bar"><div class="fill" style="width:${fillPercent}%;"></div></div>
-                        <button class="btn-book" ${busy ? 'disabled' : ''} data-room-id="${room.id}">
-                            ${busy ? 'Занято' : 'Забронировать'}
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            document.querySelectorAll('.btn-book:not([disabled])').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    const roomId = parseInt(this.dataset.roomId);
-                    openBookModal(roomId);
-                });
-            });
-        }
-
-        function openBookModal(roomId) {
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            document.getElementById('bookRoomName').textContent = room.name;
-            document.getElementById('bookDate').value = getToday();
-            document.getElementById('bookStart').value = '10:00';
-            document.getElementById('bookEnd').value = '11:00';
-
-            const modal = document.getElementById('bookModal');
-            modal.dataset.roomId = roomId;
-            modal.classList.add('active');
-        }
-
-        document.getElementById('cancelBook').addEventListener('click', function() {
-            document.getElementById('bookModal').classList.remove('active');
-        });
-
-        document.getElementById('saveBook').addEventListener('click', function() {
-            const modal = document.getElementById('bookModal');
-            const roomId = parseInt(modal.dataset.roomId);
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-
-            const date = document.getElementById('bookDate').value;
-            const start = document.getElementById('bookStart').value;
-            const end = document.getElementById('bookEnd').value;
-
-            if (!date || !start || !end) {
-                showToast('Заполните дату и время');
-                return;
-            }
-            if (start >= end) {
-                showToast('Время начала должно быть раньше окончания');
-                return;
-            }
-
-            const newBooking = {
-                id: nextBookingId++,
-                date: date,
-                start: start,
-                end: end,
-                participants: []
-            };
-            room.bookings.push(newBooking);
-            modal.classList.remove('active');
-            renderRooms();
-            showToast('Бронирование создано');
-        });
-
-        document.getElementById('addRoomBtn').addEventListener('click', function() {
-            document.getElementById('addRoomModal').classList.add('active');
-            document.getElementById('newRoomName').value = '';
-            document.getElementById('newRoomCapacity').value = '';
-            document.getElementById('newRoomEquip').value = '';
-        });
-
-        document.getElementById('cancelAddRoom').addEventListener('click', function() {
-            document.getElementById('addRoomModal').classList.remove('active');
-        });
-
-        document.getElementById('saveAddRoom').addEventListener('click', function() {
-            const name = document.getElementById('newRoomName').value.trim();
-            const cap = parseInt(document.getElementById('newRoomCapacity').value);
-            const equip = document.getElementById('newRoomEquip').value.trim();
-            if (!name || !cap || cap < 1) {
-                showToast('Введите название и корректную вместимость');
-                return;
-            }
-            rooms.push({
-                id: nextRoomId++,
-                name: name,
-                capacity: cap,
-                equipment: equip || '—',
-                bookings: []
-            });
-            document.getElementById('addRoomModal').classList.remove('active');
-            renderRooms();
-            showToast('Комната добавлена');
-        });
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show';
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => {
-                t.className = 'toast hide';
-                setTimeout(() => { t.className = 'toast'; }, 300);
-            }, 2500);
-        }
+        const newBooking = {
+            id: nextBookingId++,
+            date: date,
+            start: start,
+            end: end,
+            participants: []
+        };
+        room.bookings.push(newBooking);
+        modal.classList.remove('active');
         renderRooms();
-    </script>
+        showToast('Бронирование создано');
+    });
+
+    document.getElementById('addRoomBtn').addEventListener('click', function() {
+        document.getElementById('addRoomModal').classList.add('active');
+        document.getElementById('newRoomName').value = '';
+        document.getElementById('newRoomCapacity').value = '';
+        document.getElementById('newRoomEquip').value = '';
+    });
+
+    document.getElementById('cancelAddRoom').addEventListener('click', function() {
+        document.getElementById('addRoomModal').classList.remove('active');
+    });
+
+    document.getElementById('saveAddRoom').addEventListener('click', function() {
+        const name = document.getElementById('newRoomName').value.trim();
+        const cap = parseInt(document.getElementById('newRoomCapacity').value);
+        const equip = document.getElementById('newRoomEquip').value.trim();
+        if (!name || !cap || cap < 1) {
+            showToast('Введите название и корректную вместимость');
+            return;
+        }
+        rooms.push({
+            id: nextRoomId++,
+            name: name,
+            capacity: cap,
+            equipment: equip || '—',
+            bookings: []
+        });
+        document.getElementById('addRoomModal').classList.remove('active');
+        renderRooms();
+        showToast('Комната добавлена');
+    });
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => {
+            t.className = 'toast hide';
+            setTimeout(() => { t.className = 'toast'; }, 300);
+        }, 2500);
+    }
+    renderRooms();
+</script>
 </body>
 </html>
