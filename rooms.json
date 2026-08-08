@@ -1,10 +1,16 @@
 {
-  "room1": {
-    "capacity": 5,
-    "inventory": "5 компьютеров в LAN-сети"
-  },
-  "room2": {
-    "capacity": 15,
-    "inventory": "Ноутбук с проектором"
-  }
+    "room3": {
+        "name": "Переговорная А",
+        "capacity": 10,
+        "inventory": "Проектор, доска",
+        "organization": "МТС",
+        "bookings": []
+    },
+    "room4": {
+        "name": "вмке",
+        "capacity": 557,
+        "inventory": "нтарипв",
+        "organization": "МТС",
+        "bookings": []
+    }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confero</title>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -19,45 +20,11 @@
             font-family: 'Inter', system-ui, sans-serif;
             padding: 24px;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 5%;
-            left: 3%;
-            width: 280px;
-            height: 280px;
-            background: #d9c5b2;
-            border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%;
-            opacity: 0.10;
-            transform: rotate(-10deg);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: 8%;
-            right: 5%;
-            width: 200px;
-            height: 200px;
-            background: #cbb09b;
-            border-radius: 30% 70% 50% 50% / 40% 40% 60% 60%;
-            opacity: 0.10;
-            transform: rotate(20deg);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
         header {
@@ -74,9 +41,6 @@
         .logo {
             font-family: 'DM Serif Display', serif;
             font-size: 36px;
-            font-weight: 400;
-            letter-spacing: -1px;
-            color: #1e1e1e;
         }
 
         .logo span {
@@ -91,6 +55,7 @@
         }
 
         .btn {
+            display: inline-block;
             background: #1e1e1e;
             color: #fcf8f5;
             border: 2px solid #1e1e1e;
@@ -101,6 +66,7 @@
             cursor: pointer;
             transition: 0.12s;
             text-transform: uppercase;
+            text-decoration: none;
             letter-spacing: 0.3px;
             border-radius: 0;
         }
@@ -115,13 +81,8 @@
             color: #1e1e1e;
         }
 
-        .btn-outline:hover {
-            background: #1e1e1e;
-            color: #fcf8f5;
-        }
-
         .add-wrap {
-            margin: 0 0 24px 0;
+            margin-bottom: 24px;
         }
 
         .room-grid {
@@ -136,15 +97,9 @@
             border: 2px solid #1e1e1e;
             border-radius: 8px 28px 8px 28px;
             box-shadow: 6px 6px 0 #1e1e1e;
-            transition: 0.15s ease;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .room-card:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0 #1e1e1e;
+            gap: 12px;
         }
 
         .room-card.busy {
@@ -155,14 +110,12 @@
         .room-card .top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            gap: 10px;
         }
 
         .room-card .name {
             font-family: 'DM Serif Display', serif;
             font-size: 22px;
-            font-weight: 400;
-            line-height: 1.2;
         }
 
         .room-card .capacity {
@@ -171,6 +124,7 @@
             background: #ece3db;
             padding: 2px 10px;
             border: 1px solid #1e1e1e;
+            white-space: nowrap;
         }
 
         .room-card .status {
@@ -188,10 +142,14 @@
             color: #a63a3a;
         }
 
+        .room-card .equipment,
+        .room-card .organization {
+            font-size: 14px;
+        }
+
         .room-card .footer {
             display: flex;
             justify-content: flex-end;
-            align-items: center;
             border-top: 2px dotted #d9c5b2;
             padding-top: 12px;
             margin-top: auto;
@@ -201,15 +159,15 @@
             background: #1e1e1e;
             color: #fcf8f5;
             border: 2px solid #1e1e1e;
-            padding: 6px 16px;
-            font-family: 'Inter', sans-serif;
+            padding: 7px 16px;
             font-weight: 600;
-            font-size: 13px;
             cursor: pointer;
-            transition: 0.12s;
             text-transform: uppercase;
-            border-radius: 0;
-            white-space: nowrap;
+        }
+
+        .btn-book:hover:not(:disabled) {
+            background: #fcf8f5;
+            color: #1e1e1e;
         }
 
         .btn-book:disabled {
@@ -219,20 +177,11 @@
             color: #1e1e1e;
         }
 
-        .btn-book:hover:not(:disabled) {
-            background: #fcf8f5;
-            color: #1e1e1e;
-        }
-
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(30, 30, 30, 0.3);
-            backdrop-filter: blur(2px);
             justify-content: center;
             align-items: center;
             z-index: 999;
@@ -250,44 +199,30 @@
             box-shadow: 10px 10px 0 #1e1e1e;
             max-width: 480px;
             width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .modal h2 {
             font-family: 'DM Serif Display', serif;
             font-size: 28px;
-            font-weight: 400;
             margin-bottom: 20px;
             border-bottom: 3px dashed #d9c5b2;
             padding-bottom: 8px;
         }
 
         .modal label {
+            display: block;
+            margin: 12px 0 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             font-weight: 600;
-            text-transform: lowercase;
-            display: block;
-            margin: 12px 0 4px;
         }
 
         .modal input {
             width: 100%;
             padding: 10px 14px;
             border: 2px solid #1e1e1e;
-            border-radius: 0;
-            background: #ffffff;
             font-size: 15px;
-            color: #1e1e1e;
-            font-family: 'Inter', sans-serif;
             outline: none;
-        }
-
-        .modal input:focus {
-            background: #fcf8f5;
-            border-color: #a67b5e;
-            box-shadow: inset 0 0 0 1px #a67b5e;
         }
 
         .modal .actions {
@@ -297,275 +232,476 @@
             margin-top: 24px;
         }
 
-        .modal .actions .btn {
-            padding: 8px 20px;
-            font-size: 14px;
-        }
-
         .btn-secondary {
             background: transparent;
             color: #1e1e1e;
-            border: 2px solid #1e1e1e;
-        }
-
-        .btn-secondary:hover {
-            background: #1e1e1e;
-            color: #fcf8f5;
         }
 
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
-            transform: translateX(-50%) translateY(10px);
+            transform: translateX(-50%);
             background: #1e1e1e;
             color: #fcf8f5;
-            padding: 12px 24px;
-            border: 2px solid #1e1e1e;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            box-shadow: 6px 6px 0 #1e1e1e;
+            padding: 14px 24px;
             opacity: 0;
             pointer-events: none;
+            transition: 0.25s;
             z-index: 1000;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-            border-radius: 0;
         }
 
         .toast.show {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.hide {
-            opacity: 0;
-            transform: translateX(-50%) translateY(10px);
         }
 
         @media (max-width: 600px) {
-            header { flex-direction: column; align-items: stretch; }
-            .header-actions { justify-content: space-between; }
-            .modal { padding: 24px; }
+            header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <header>
-        <div class="logo">Con<span>fero</span></div>
-        <div class="header-actions">
-            <a href="booking.html" class="btn btn-outline">Мои бронирования</a>
-            <a href="login" class="btn btn-outline" id="logoutBtn">Выйти</a>
-        </div>
-    </header>
 
-    <div class="add-wrap">
-        <button class="btn" id="addRoomBtn">➕ Добавить комнату</button>
+<body>
+    <div class="container">
+
+        <header>
+            <div class="logo">
+                Con<span>fero</span>
+            </div>
+
+            <div class="header-actions">
+                <a href="/booking" class="btn btn-outline">
+                    Мои бронирования
+                </a>
+
+                <a href="/login" class="btn btn-outline">
+                    Выйти
+                </a>
+            </div>
+        </header>
+
+        <div class="add-wrap">
+            <button class="btn" id="addRoomBtn">
+                Добавить комнату
+            </button>
+        </div>
+
+        <div class="room-grid" id="roomGrid"></div>
     </div>
 
-    <div class="room-grid" id="roomGrid"></div>
-</div>
+    <div class="modal-overlay" id="addRoomModal">
+        <div class="modal">
+            <h2>Новая комната</h2>
 
-<div class="modal-overlay" id="addRoomModal">
-    <div class="modal">
-        <h2>Новая комната</h2>
-        <label>название</label>
-        <input
+            <label for="newRoomName">Название</label>
+            <input
                 type="text"
                 id="newRoomName"
                 placeholder="Переговорная А"
-        >
-        <label>вместимость (чел.)</label>
-        <input
+            >
+
+            <label for="newRoomCapacity">Вместимость</label>
+            <input
                 type="number"
                 id="newRoomCapacity"
                 placeholder="10"
                 min="1"
-        >
-        <label>оснащение</label>
-        <input
+            >
+
+            <label for="newRoomEquip">Оснащение</label>
+            <input
                 type="text"
                 id="newRoomEquip"
                 placeholder="Проектор, доска"
-        >
-        <div class="actions">
-            <button class="btn btn-secondary" id="cancelAddRoom">Отмена</button>
-            <button class="btn" id="saveAddRoom">Сохранить</button>
+            >
+
+            <div class="actions">
+                <button class="btn btn-secondary" id="cancelAddRoom">
+                    Отмена
+                </button>
+
+                <button class="btn" id="saveAddRoom">
+                    Сохранить
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="modal-overlay" id="bookModal">
-    <div class="modal">
-        <h2>Бронирование</h2>
-        <p id="bookRoomName" style="font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:12px;"></p>
-        <label>дата</label>
-        <input
-                type="date"
-                id="bookDate"
-        >
-        <label>начало</label>
-        <input
-                type="time"
-                id="bookStart"
-        >
-        <label>конец</label>
-        <input
-                type="time"
-                id="bookEnd"
-        >
-        <div class="actions">
-            <button class="btn btn-secondary" id="cancelBook">Отмена</button>
-            <button class="btn" id="saveBook">Забронировать</button>
+    <div class="modal-overlay" id="bookModal">
+        <div class="modal">
+            <h2>Бронирование</h2>
+
+            <p id="bookRoomName"></p>
+
+            <label for="bookDate">Дата</label>
+            <input type="date" id="bookDate">
+
+            <label for="bookStart">Начало</label>
+            <input type="time" id="bookStart">
+
+            <label for="bookEnd">Конец</label>
+            <input type="time" id="bookEnd">
+
+            <div class="actions">
+                <button class="btn btn-secondary" id="cancelBook">
+                    Отмена
+                </button>
+
+                <button class="btn" id="saveBook">
+                    Забронировать
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
 
-<script>
-    let rooms = [];
-    let nextRoomId = 1;
-    let nextBookingId = 1;
+    <script>
+        let rooms = [];
+        let nextBookingId = 1;
 
-    function getToday() {
-        return new Date().toISOString().split('T')[0];
-    }
+        async function loadRooms() {
+            try {
+                const response = await fetch('/api/rooms');
 
-    function isRoomBusy(room) {
-        const now = new Date();
-        const today = getToday();
-        return room.bookings.some(b => {
-            if (b.date !== today) return false;
-            const start = new Date(today + 'T' + b.start);
-            const end = new Date(today + 'T' + b.end);
-            return now >= start && now <= end;
-        });
-    }
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки комнат');
+                }
 
-    function renderRooms() {
-        const grid = document.getElementById('roomGrid');
-        grid.innerHTML = '';
-        rooms.forEach(room => {
-            const busy = isRoomBusy(room);
-            const card = document.createElement('div');
-            card.className = 'room-card' + (busy ? ' busy' : '');
-            let statusText = busy ? '🔴 занята' : '🟢 свободна';
-            let statusClass = busy ? 'busy' : 'free';
-            card.innerHTML = `
-                <div class="top">
-                    <span class="name">${room.name}</span>
-                    <span class="capacity">${room.capacity}</span>
-                </div>
-                <div class="status ${statusClass}">${statusText}</div>
-                <div class="footer">
-                    <button class="btn-book" ${busy ? 'disabled' : ''} data-room-id="${room.id}">
-                        ${busy ? 'Занято' : 'Забронировать'}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+                rooms = await response.json();
 
-        document.querySelectorAll('.btn-book:not([disabled])').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const roomId = parseInt(this.dataset.roomId);
-                openBookModal(roomId);
+                renderRooms();
+
+            } catch (error) {
+                console.error(error);
+                showToast('Ошибка загрузки комнат');
+            }
+        }
+
+        function getToday() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function isRoomBusy(room) {
+            const now = new Date();
+            const today = getToday();
+
+            return (room.bookings || []).some(booking => {
+                if (booking.date !== today) {
+                    return false;
+                }
+
+                const start = new Date(
+                    today + 'T' + booking.start
+                );
+
+                const end = new Date(
+                    today + 'T' + booking.end
+                );
+
+                return now >= start && now <= end;
             });
-        });
-    }
-
-    function openBookModal(roomId) {
-        const room = rooms.find(r => r.id === roomId);
-        if (!room) return;
-        document.getElementById('bookRoomName').textContent = room.name;
-        document.getElementById('bookDate').value = getToday();
-        document.getElementById('bookStart').value = '10:00';
-        document.getElementById('bookEnd').value = '11:00';
-
-        const modal = document.getElementById('bookModal');
-        modal.dataset.roomId = roomId;
-        modal.classList.add('active');
-    }
-
-    document.getElementById('cancelBook').addEventListener('click', function() {
-        document.getElementById('bookModal').classList.remove('active');
-    });
-
-    document.getElementById('saveBook').addEventListener('click', function() {
-        const modal = document.getElementById('bookModal');
-        const roomId = parseInt(modal.dataset.roomId);
-        const room = rooms.find(r => r.id === roomId);
-        if (!room) return;
-
-        const date = document.getElementById('bookDate').value;
-        const start = document.getElementById('bookStart').value;
-        const end = document.getElementById('bookEnd').value;
-
-        if (!date || !start || !end) {
-            showToast('Заполните дату и время');
-            return;
-        }
-        if (start >= end) {
-            showToast('Время начала должно быть раньше окончания');
-            return;
         }
 
-        const newBooking = {
-            id: nextBookingId++,
-            date: date,
-            start: start,
-            end: end,
-            participants: []
-        };
-        room.bookings.push(newBooking);
-        modal.classList.remove('active');
-        renderRooms();
-        showToast('Бронирование создано');
-    });
+        function renderRooms() {
+            const grid = document.getElementById('roomGrid');
 
-    document.getElementById('addRoomBtn').addEventListener('click', function() {
-        document.getElementById('addRoomModal').classList.add('active');
-        document.getElementById('newRoomName').value = '';
-        document.getElementById('newRoomCapacity').value = '';
-        document.getElementById('newRoomEquip').value = '';
-    });
+            grid.innerHTML = '';
 
-    document.getElementById('cancelAddRoom').addEventListener('click', function() {
-        document.getElementById('addRoomModal').classList.remove('active');
-    });
+            rooms.forEach(room => {
+                const busy = isRoomBusy(room);
 
-    document.getElementById('saveAddRoom').addEventListener('click', function() {
-        const name = document.getElementById('newRoomName').value.trim();
-        const cap = parseInt(document.getElementById('newRoomCapacity').value);
-        const equip = document.getElementById('newRoomEquip').value.trim();
-        if (!name || !cap || cap < 1) {
-            showToast('Введите название и корректную вместимость');
-            return;
+                const card = document.createElement('div');
+
+                card.className = 'room-card';
+
+                if (busy) {
+                    card.classList.add('busy');
+                }
+
+                const statusText = busy
+                    ? '🔴 Занята'
+                    : '🟢 Свободна';
+
+                const statusClass = busy
+                    ? 'busy'
+                    : 'free';
+
+                card.innerHTML = `
+                    <div class="top">
+                        <span class="name">
+                            ${room.name}
+                        </span>
+
+                        <span class="capacity">
+                            ${room.capacity} мест
+                        </span>
+                    </div>
+
+                    <div class="status ${statusClass}">
+                        ${statusText}
+                    </div>
+
+                    <div class="equipment">
+                        Оснащение: ${room.equipment || '—'}
+                    </div>
+
+                    <div class="organization">
+                        Организация: ${room.organization || '—'}
+                    </div>
+
+                    <div class="footer">
+                        <button
+                            class="btn-book"
+                            data-room-id="${room.id}"
+                            ${busy ? 'disabled' : ''}
+                        >
+                            ${busy ? 'Занято' : 'Забронировать'}
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            document
+                .querySelectorAll('.btn-book:not([disabled])')
+                .forEach(button => {
+                    button.addEventListener('click', function() {
+                        const roomId = Number(
+                            this.dataset.roomId
+                        );
+
+                        openBookModal(roomId);
+                    });
+                });
         }
-        rooms.push({
-            id: nextRoomId++,
-            name: name,
-            capacity: cap,
-            equipment: equip || '—',
-            bookings: []
-        });
-        document.getElementById('addRoomModal').classList.remove('active');
-        renderRooms();
-        showToast('Комната добавлена');
-    });
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast show';
-        clearTimeout(t._timer);
-        t._timer = setTimeout(() => {
-            t.className = 'toast hide';
-            setTimeout(() => { t.className = 'toast'; }, 300);
-        }, 2500);
-    }
-    renderRooms();
-</script>
+        function openBookModal(roomId) {
+            const room = rooms.find(
+                item => item.id === roomId
+            );
+
+            if (!room) {
+                return;
+            }
+
+            document
+                .getElementById('bookRoomName')
+                .textContent = room.name;
+
+            document
+                .getElementById('bookDate')
+                .value = getToday();
+
+            document
+                .getElementById('bookStart')
+                .value = '10:00';
+
+            document
+                .getElementById('bookEnd')
+                .value = '11:00';
+
+            const modal = document.getElementById('bookModal');
+
+            modal.dataset.roomId = roomId;
+            modal.classList.add('active');
+        }
+
+        document
+            .getElementById('addRoomBtn')
+            .addEventListener('click', function() {
+                document
+                    .getElementById('addRoomModal')
+                    .classList.add('active');
+
+                document
+                    .getElementById('newRoomName')
+                    .value = '';
+
+                document
+                    .getElementById('newRoomCapacity')
+                    .value = '';
+
+                document
+                    .getElementById('newRoomEquip')
+                    .value = '';
+            });
+
+        document
+            .getElementById('cancelAddRoom')
+            .addEventListener('click', function() {
+                document
+                    .getElementById('addRoomModal')
+                    .classList.remove('active');
+            });
+
+        document
+            .getElementById('saveAddRoom')
+            .addEventListener('click', async function() {
+                const name = document
+                    .getElementById('newRoomName')
+                    .value
+                    .trim();
+
+                const capacity = parseInt(
+                    document
+                        .getElementById('newRoomCapacity')
+                        .value
+                );
+
+                const equipment = document
+                    .getElementById('newRoomEquip')
+                    .value
+                    .trim();
+
+                if (!name || !capacity || capacity < 1) {
+                    showToast(
+                        'Введите название и вместимость'
+                    );
+
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/rooms', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            capacity: capacity,
+                            equipment: equipment || '—',
+                            organization: 'МТС'
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(
+                            'Комната не сохранилась'
+                        );
+                    }
+
+                    const savedRoom = await response.json();
+
+                    rooms.push(savedRoom);
+
+                    document
+                        .getElementById('addRoomModal')
+                        .classList.remove('active');
+
+                    renderRooms();
+
+                    showToast(
+                        'Комната добавлена в JSON'
+                    );
+
+                } catch (error) {
+                    console.error(error);
+                    showToast(
+                        'Ошибка сохранения комнаты'
+                    );
+                }
+            });
+
+        document
+            .getElementById('cancelBook')
+            .addEventListener('click', function() {
+                document
+                    .getElementById('bookModal')
+                    .classList.remove('active');
+            });
+
+        document
+            .getElementById('saveBook')
+            .addEventListener('click', function() {
+                const modal = document
+                    .getElementById('bookModal');
+
+                const roomId = Number(
+                    modal.dataset.roomId
+                );
+
+                const room = rooms.find(
+                    item => item.id === roomId
+                );
+
+                if (!room) {
+                    return;
+                }
+
+                const date = document
+                    .getElementById('bookDate')
+                    .value;
+
+                const start = document
+                    .getElementById('bookStart')
+                    .value;
+
+                const end = document
+                    .getElementById('bookEnd')
+                    .value;
+
+                if (!date || !start || !end) {
+                    showToast(
+                        'Заполните дату и время'
+                    );
+
+                    return;
+                }
+
+                if (start >= end) {
+                    showToast(
+                        'Начало должно быть раньше конца'
+                    );
+
+                    return;
+                }
+
+                if (!room.bookings) {
+                    room.bookings = [];
+                }
+
+                room.bookings.push({
+                    id: nextBookingId++,
+                    date: date,
+                    start: start,
+                    end: end,
+                    participants: []
+                });
+
+                modal.classList.remove('active');
+
+                renderRooms();
+
+                showToast(
+                    'Бронирование создано'
+                );
+            });
+
+        function showToast(message) {
+            const toast = document
+                .getElementById('toast');
+
+            toast.textContent = message;
+            toast.className = 'toast show';
+
+            clearTimeout(toast.timer);
+
+            toast.timer = setTimeout(function() {
+                toast.className = 'toast';
+            }, 2500);
+        }
+
+        loadRooms();
+    </script>
 </body>
 </html>
