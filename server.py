@@ -13,7 +13,18 @@ ROOMS_JSON = 'rooms.json'
 async def login(request: Request, mail: str = Form(...), password: str = Form(...)):
     with open(USERS_JSON, "r", encoding="utf-8") as f:
         users = json.load(f)
-    if mail not in users:
+
+@app.post('/register')
+async def register(request: Request, mail: str = Form(...), password: str = Form(...)):
+    return render_template('register.html')
+
+@app.post('/login')
+async def login(request: Request, mail: str = Form(...), password: str = Form(...)):
+    return render_template('login.html')
+
+@app.post('/main')
+async def main(request: Request, mail: str = Form(...), password: str = Form(...)):
+    return render_template('main.html')
         
 
 
