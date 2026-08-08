@@ -190,26 +190,11 @@
 
         .room-card .footer {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             border-top: 2px dotted #d9c5b2;
             padding-top: 12px;
             margin-top: auto;
-        }
-
-        .room-card .footer .fill-bar {
-            flex: 1;
-            height: 8px;
-            background: #ece3db;
-            border: 1px solid #1e1e1e;
-            margin-right: 12px;
-            overflow: hidden;
-        }
-
-        .room-card .footer .fill-bar .fill {
-            height: 100%;
-            background: #1e1e1e;
-            transition: width 0.2s;
         }
 
         .btn-book {
@@ -439,13 +424,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    let rooms = [
-        { id: 1, name: 'Переговорная А', capacity: 10, equipment: 'Проектор, доска', bookings: [] },
-        { id: 2, name: 'Конференц-зал', capacity: 25, equipment: 'Видеоконференция', bookings: [] },
-        { id: 3, name: 'Комната для мозгового штурма', capacity: 6, equipment: 'Флипчарт', bookings: [] },
-        { id: 4, name: 'Переговорная Б', capacity: 8, equipment: 'Телевизор', bookings: [] }
-    ];
-    let nextRoomId = 5;
+    let rooms = [];
+    let nextRoomId = 1;
     let nextBookingId = 1;
 
     function getToday() {
@@ -470,13 +450,8 @@
             const busy = isRoomBusy(room);
             const card = document.createElement('div');
             card.className = 'room-card' + (busy ? ' busy' : '');
-            const bookedNow = room.bookings.find(b => b.date === getToday() &&
-                new Date(getToday()+'T'+b.start) <= new Date() && new Date() <= new Date(getToday()+'T'+b.end));
-            const fillPercent = room.capacity > 0 ? Math.min(100, (bookedNow ? (bookedNow.participants ? bookedNow.participants.length : 0) : 0) / room.capacity * 100) : 0;
-
             let statusText = busy ? '🔴 занята' : '🟢 свободна';
             let statusClass = busy ? 'busy' : 'free';
-
             card.innerHTML = `
                 <div class="top">
                     <span class="name">${room.name}</span>
@@ -484,7 +459,6 @@
                 </div>
                 <div class="status ${statusClass}">${statusText}</div>
                 <div class="footer">
-                    <div class="fill-bar"><div class="fill" style="width:${fillPercent}%;"></div></div>
                     <button class="btn-book" ${busy ? 'disabled' : ''} data-room-id="${room.id}">
                         ${busy ? 'Занято' : 'Забронировать'}
                     </button>
