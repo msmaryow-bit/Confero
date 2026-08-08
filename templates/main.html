@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confero — Комнаты</title>
+    <title>Confero</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -369,7 +369,7 @@
     <header>
         <div class="logo">Con<span>fero</span></div>
         <div class="header-actions">
-            <!-- Кнопка выхода теперь ведёт на login.html (или login) -->
+            <a href="booking.html" class="btn btn-outline">Мои бронирования</a>
             <a href="login" class="btn btn-outline" id="logoutBtn">Выйти</a>
         </div>
     </header>
@@ -381,7 +381,6 @@
     <div class="room-grid" id="roomGrid"></div>
 </div>
 
-<!-- Модалка добавления комнаты -->
 <div class="modal-overlay" id="addRoomModal">
     <div class="modal">
         <h2>Новая комната</h2>
@@ -411,7 +410,6 @@
     </div>
 </div>
 
-<!-- Модалка бронирования -->
 <div class="modal-overlay" id="bookModal">
     <div class="modal">
         <h2>Бронирование</h2>
