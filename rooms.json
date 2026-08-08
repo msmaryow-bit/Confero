@@ -12,5 +12,27 @@
         "inventory": "нтарипв",
         "organization": "МТС",
         "bookings": []
+    },
+    "room5": {
+        "name": "tyukrtbyjvthergdf",
+        "capacity": 1487,
+        "inventory": "cszfbgvtnm",
+        "organization": "МТС",
+        "bookings": [
+            {
+                "id": 1,
+                "date": "2026-08-08",
+                "start": "10:00",
+                "end": "11:00",
+                "participants": []
+            },
+            {
+                "id": 2,
+                "date": "2026-08-08",
+                "start": "17:00",
+                "end": "18:00",
+                "participants": []
+            }
+        ]
     }
 }

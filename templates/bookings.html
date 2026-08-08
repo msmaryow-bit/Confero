@@ -245,120 +245,112 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <a href="main.html" class="logo">Con<span>fero</span></a>
-            <div class="header-actions">
-                <button class="btn btn-outline" id="logoutBtn">Выйти</button>
-            </div>
-        </header>
+<div class="container">
+    <header>
+        <a href="main.html" class="logo">Con<span>fero</span></a>
+        <div class="header-actions">
+            <button class="btn btn-outline" id="logoutBtn">Выйти</button>
+        </div>
+    </header>
 
-        <h1 class="page-title">Мои бронирования</h1>
-        <div id="bookingList" class="booking-list"></div>
-    </div>
+    <h1 class="page-title">Мои бронирования</h1>
+    <div id="bookingList" class="booking-list"></div>
+</div>
 
-    <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-    <script>
-        let currentUser = { id: 1, name: 'Анна' };
-        let rooms = [
-            { id: 1, name: 'Переговорная А', capacity: 10, equipment: 'Проектор, доска', bookings: [] },
-            { id: 2, name: 'Конференц-зал', capacity: 25, equipment: 'Видеоконференция', bookings: [] },
-            { id: 3, name: 'Комната для мозгового штурма', capacity: 6, equipment: 'Флипчарт', bookings: [] },
-            { id: 4, name: 'Переговорная Б', capacity: 8, equipment: 'Телевизор', bookings: [] }
-        ];
+<script>
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => {
+            t.className = 'toast hide';
+            setTimeout(() => { t.className = 'toast'; }, 300);
+        }, 2500);
+    }
 
-        function getToday() {
-            return new Date().toISOString().split('T')[0];
+    function isBookingActive(booking) {
+        const today = new Date().toISOString().split('T')[0];
+        if (booking.date < today) return false;
+        if (booking.date > today) return true;
+        const now = new Date();
+        const end = new Date(booking.date + 'T' + booking.end);
+        return now < end;
+    }
+
+    async function loadAllBookings() {
+        try {
+            const resp = await fetch('/api/all-bookings');
+            if (!resp.ok) throw new Error('Ошибка загрузки');
+            const bookings = await resp.json();
+            renderBookings(bookings);
+        } catch (e) {
+            console.error(e);
+            showToast('Не удалось загрузить бронирования');
         }
+    }
 
-        function isBookingActive(booking) {
-            const today = getToday();
-            if (booking.date < today) return false;
-            if (booking.date > today) return true;
-            const now = new Date();
-            const end = new Date(today + 'T' + booking.end);
-            return now < end;
+    function renderBookings(bookings) {
+        const container = document.getElementById('bookingList');
+        if (bookings.length === 0) {
+            container.innerHTML = '<div class="empty">Бронирований пока нет</div>';
+            return;
         }
-
-        function renderBookings() {
-            const container = document.getElementById('bookingList');
-            const userBookings = [];
-            rooms.forEach(room => {
-                room.bookings.forEach(booking => {
-                    if (booking.bookerId === currentUser.id) {
-                        userBookings.push({
-                            ...booking,
-                            roomName: room.name,
-                            roomId: room.id
-                        });
-                    }
-                });
-            });
-
-            if (userBookings.length === 0) {
-                container.innerHTML = '<div class="empty">У вас пока нет бронирований</div>';
-                return;
-            }
-
-            userBookings.sort((a, b) => {
-                if (a.date !== b.date) return a.date.localeCompare(b.date);
-                return a.start.localeCompare(b.start);
-            });
-
-            container.innerHTML = '';
-            userBookings.forEach(booking => {
-                const active = isBookingActive(booking);
-                const statusText = active ? 'активна' : 'завершена';
-                const statusClass = active ? 'active' : 'past';
-                const item = document.createElement('div');
-                item.className = 'booking-item';
-                item.innerHTML = `
-                    <div class="booking-info">
-                        <div class="booking-room">${booking.roomName}</div>
-                        <div class="booking-details">${booking.date} ${booking.start} — ${booking.end}</div>
-                        <div class="booking-status ${statusClass}">${statusText}</div>
-                    </div>
-                    ${active ? `<button class="btn btn-sm btn-danger" data-booking-id="${booking.id}" data-room-id="${booking.roomId}">Отменить</button>` : ''}
-                `;
-                container.appendChild(item);
-            });
-
-            document.querySelectorAll('[data-booking-id]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const bookingId = parseInt(this.dataset.bookingId);
-                    const roomId = parseInt(this.dataset.roomId);
-                    cancelBooking(roomId, bookingId);
-                });
-            });
-        }
-
-        function cancelBooking(roomId, bookingId) {
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            const index = room.bookings.findIndex(b => b.id === bookingId);
-            if (index === -1) return;
-            room.bookings.splice(index, 1);
-            renderBookings();
-            showToast('Бронирование отменено');
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show';
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => {
-                t.className = 'toast hide';
-                setTimeout(() => { t.className = 'toast'; }, 300);
-            }, 2500);
-        }
-
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            showToast('Выход');
+        bookings.sort((a, b) => {
+            if (a.date !== b.date) return a.date.localeCompare(b.date);
+            return a.start.localeCompare(b.start);
         });
 
-        renderBookings();
-    </script>
+        container.innerHTML = '';
+        bookings.forEach(b => {
+            const active = isBookingActive(b);
+            const statusText = active ? 'активна' : 'завершена';
+            const statusClass = active ? 'active' : 'past';
+            const div = document.createElement('div');
+            div.className = 'booking-item';
+            div.innerHTML = `
+                <div class="booking-info">
+                    <div class="booking-room">${b.room_name}</div>
+                    <div class="booking-details">${b.date} ${b.start} — ${b.end}</div>
+                    <div class="booking-status ${statusClass}">${statusText}</div>
+                </div>
+                ${active ? `<button class="btn btn-sm btn-danger" data-booking-id="${b.booking_id}" data-room-id="${b.room_id}">Отменить</button>` : ''}
+            `;
+            container.appendChild(div);
+        });
+
+        document.querySelectorAll('[data-booking-id]').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const bookingId = parseInt(this.dataset.bookingId);
+                const roomId = parseInt(this.dataset.roomId);
+                await cancelBooking(roomId, bookingId);
+            });
+        });
+    }
+
+    async function cancelBooking(roomId, bookingId) {
+        try {
+            const resp = await fetch(`/api/rooms/${roomId}/bookings/${bookingId}`, {
+                method: 'DELETE'
+            });
+            if (!resp.ok) throw new Error('Не удалось отменить');
+            showToast('Бронирование отменено');
+            loadAllBookings();
+        } catch (e) {
+            showToast(e.message);
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', loadAllBookings);
+
+
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.cookie = 'user_email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        window.location.href = '/login';
+    });
+</script>
 </body>
 </html>
