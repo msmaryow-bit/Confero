@@ -77,6 +77,7 @@
             font-weight: 400;
             letter-spacing: -1px;
             color: #1e1e1e;
+            text-decoration: none;
         }
 
         .logo span {
@@ -103,6 +104,8 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             border-radius: 0;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn:hover {
@@ -367,8 +370,9 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">Con<span>fero</span></div>
+            <a href="main.html" class="logo">Con<span>fero</span></a>
             <div class="header-actions">
+                <a href="bookings.html" class="btn btn-outline">Мои бронирования</a>
                 <button class="btn btn-outline" id="logoutBtn">Выйти</button>
             </div>
         </header>
@@ -438,6 +442,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        let currentUser = { id: 1, name: 'Анна' };
         let rooms = [
             { id: 1, name: 'Переговорная А', capacity: 10, equipment: 'Проектор, доска', bookings: [] },
             { id: 2, name: 'Конференц-зал', capacity: 25, equipment: 'Видеоконференция', bookings: [] },
@@ -541,6 +546,7 @@
                 date: date,
                 start: start,
                 end: end,
+                bookerId: currentUser.id,
                 participants: []
             };
             room.bookings.push(newBooking);
