@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confero — Вход</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f2ebe3;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            background: #d9c5b2;
+            border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 15%;
+            right: 8%;
+            width: 140px;
+            height: 140px;
+            background: #cbb09b;
+            border-radius: 30% 70% 50% 50% / 40% 40% 60% 60%;
+            opacity: 0.12;
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        .auth-wrap {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card {
+            background: #fcf8f5;
+            padding: 40px 32px 36px;
+            border: 2px solid #1e1e1e;
+            border-radius: 12px 40px 12px 40px;
+            box-shadow: 8px 8px 0 #1e1e1e;
+            transition: 0.15s ease;
+        }
+
+        .auth-card:hover {
+            box-shadow: 10px 10px 0 #1e1e1e;
+            transform: translate(-2px, -2px);
+        }
+
+        .logo-block {
+            margin-bottom: 28px;
+            border-bottom: 3px dashed #d9c5b2;
+            padding-bottom: 12px;
+        }
+
+        .logo-main {
+            font-family: 'DM Serif Display', serif;
+            font-size: 44px;
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            color: #1e1e1e;
+        }
+
+        .logo-main span {
+            font-style: italic;
+            color: #a67b5e;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            color: #2d241e;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: lowercase;
+        }
+
+        .field input {
+            padding: 12px 14px;
+            border: 2px solid #1e1e1e;
+            border-radius: 0;
+            background: #ffffff;
+            font-size: 15px;
+            color: #1e1e1e;
+            width: 100%;
+            outline: none;
+            transition: 0.1s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .field input:focus {
+            background: #fcf8f5;
+            border-color: #a67b5e;
+            box-shadow: inset 0 0 0 1px #a67b5e;
+        }
+
+        .field input::placeholder {
+            color: #c4b5a8;
+            font-weight: 300;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: #1e1e1e;
+            color: #fcf8f5;
+            border: 2px solid #1e1e1e;
+            padding: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.12s;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: 0;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #fcf8f5;
+            color: #1e1e1e;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #1e1e1e;
+            text-decoration: none;
+            border-bottom: 1px dotted #d9c5b2;
+            padding-bottom: 4px;
+        }
+
+        .link:hover {
+            color: #a67b5e;
+            border-bottom-color: #a67b5e;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #1e1e1e;
+            color: #fcf8f5;
+            padding: 14px 26px;
+            border: 2px solid #1e1e1e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            box-shadow: 6px 6px 0 #1e1e1e;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            border-radius: 0;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        @media (max-width: 480px) {
+            .auth-card { padding: 28px 18px 24px; border-width: 2px; border-radius: 8px 20px 8px 20px; }
+            .logo-main { font-size: 34px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="logo-block">
+                <div class="logo-main">Con<span>fero</span></div>
+            </div>
+            <form id="loginForm">
+                <div class="field">
+                    <label>почта</label>
+                    <input
+                        type="text"
+                        id="loginEmail"
+                        name="loginEmail"
+                        placeholder="example@mail.com"
+                        required
+                    >
+                </div>
+                <div class="field">
+                    <label>пароль</label>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="loginPassword"
+                        placeholder="••••••••"
+                        required
+                        minlength="6"
+                    >
+                </div>
+                <button type="submit" class="btn">Войти</button>
+            </form>
+            <a href="register" class="link">Нет аккаунта? Зарегистрироваться</a>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!email || !password) {
+                showToast('Заполните все поля');
+                return;
+            }
+            showToast('Выполнен вход');
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => {
+                t.className = 'toast hide';
+                setTimeout(() => { t.className = 'toast'; }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
