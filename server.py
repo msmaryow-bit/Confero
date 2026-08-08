@@ -8,4 +8,5 @@ app = FastAPI()
 
 
 @app.post('/login')
-async def registration(request: Request):
+async def login(request: Request, mail: str = Form(...), password: str = Form(...)):
+
