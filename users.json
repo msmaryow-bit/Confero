@@ -3,5 +3,10 @@
         "name": "Mike Olkhovatov",
         "password": "1234567",
         "organization": "aaaaa"
+    },
+    "qwertyjbg@frd.cfgf": {
+        "name": "qwerty",
+        "password": "123456",
+        "organization": "fffff"
     }
 }

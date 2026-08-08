@@ -211,64 +211,78 @@
             .auth-card { padding: 28px 18px 24px; border-width: 2px; border-radius: 8px 20px 8px 20px; }
             .logo-main { font-size: 34px; }
         }
+        .error {
+    margin-bottom: 16px;
+    padding: 10px;
+    border: 2px solid #a83232;
+    color: #a83232;
+    text-align: center;
+    font-size: 14px;
+}
     </style>
 </head>
 <body>
-    <div class="auth-wrap">
-        <div class="auth-card">
-            <div class="logo-block">
-                <div class="logo-main">Con<span>fero</span></div>
-            </div>
-            <form id="loginForm">
-                <div class="field">
-                    <label>почта</label>
-                    <input
-                        type="text"
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="logo-block">
+            <div class="logo-main">Con<span>fero</span></div>
+        </div>
+        <form method="post" action="/login" id="loginForm">
+            <div class="field">
+                <label for="loginEmail">почта</label>
+
+                <input
+                        type="email"
                         id="loginEmail"
-                        name="loginEmail"
+                        name="mail"
                         placeholder="example@mail.com"
+                        value="{{ mail }}"
                         required
-                    >
-                </div>
-                <div class="field">
-                    <label>пароль</label>
-                    <input
+                >
+            </div>
+
+            <div class="field">
+                <label for="loginPassword">пароль</label>
+
+                <input
                         type="password"
                         id="loginPassword"
-                        name="loginPassword"
+                        name="password"
                         placeholder="••••••••"
                         required
                         minlength="6"
-                    >
-                </div>
-                <button type="submit" class="btn">Войти</button>
-            </form>
-            <a href="register" class="link">Нет аккаунта? Зарегистрироваться</a>
-        </div>
-    </div>
-    <div class="toast" id="toast"></div>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            if (!email || !password) {
-                showToast('Заполните все поля');
-                return;
-            }
-            showToast('Выполнен вход');
-        });
+                >
+            </div>
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show';
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => {
-                t.className = 'toast hide';
-                setTimeout(() => { t.className = 'toast'; }, 300);
-            }, 2500);
+            <button type="submit" class="btn">
+                Войти
+            </button>
+        </form>
+        <a href="register" class="link">Нет аккаунта? Зарегистрироваться</a>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!email || !password) {
+            showToast('Заполните все поля');
+            return;
         }
-    </script>
+        showToast('Выполнен вход');
+    });
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => {
+            t.className = 'toast hide';
+            setTimeout(() => { t.className = 'toast'; }, 300);
+        }, 2500);
+    }
+</script>
 </body>
 </html>
