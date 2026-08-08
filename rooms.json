@@ -1,0 +1,12 @@
+{
+  "room1": {
+    "capacity": 5,
+    "inventory": "5 компьютеров в LAN-сети",
+    "organization": "МТС"
+  },
+  "room2": {
+    "capacity": 15,
+    "inventory": "Ноутбук с проектором",
+    "organization": "МТС"
+  }
+}
